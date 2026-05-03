@@ -7,7 +7,7 @@
             <template v-else-if="companyStore.overview">
                 <div class="kpi-card" v-for="kpi in kpiCards" :key="kpi.label">
                     <div class="kpi-card__icon" :style="{ background: kpi.bg, color: kpi.color }">
-                        <span v-html="kpi.icon" />
+                        <component :is="kpi.icon" :size="20" :stroke-width="1.8" />
                     </div>
                     <div class="kpi-card__body">
                         <p class="kpi-card__value">{{ kpi.value }}</p>
@@ -55,7 +55,11 @@
                             </div>
                         </div>
                     </template>
-                    <EmptyState v-else icon="🏢" title="No companies yet" compact />
+                    <EmptyState v-else title="No companies yet" compact>
+                        <template #icon>
+                            <Building2 :size="40" :stroke-width="1.5" />
+                        </template>
+                    </EmptyState>
                 </div>
             </div>
 
@@ -90,7 +94,11 @@
                             <span class="trend-summary__avg">Avg/day: ৳{{ formatNum(trendAvg) }}</span>
                         </div>
                     </div>
-                    <EmptyState v-else icon="📈" title="No revenue data" compact />
+                    <EmptyState v-else title="No revenue data" compact>
+                        <template #icon>
+                            <TrendingUp :size="40" :stroke-width="1.5" />
+                        </template>
+                    </EmptyState>
                 </div>
             </div>
         </div>
@@ -116,7 +124,11 @@
                         <span class="audit-row__time">{{ timeAgo(log.created_at) }}</span>
                     </div>
                 </template>
-                <EmptyState v-else icon="📋" title="No recent activity" compact />
+                <EmptyState v-else title="No recent activity" compact>
+                    <template #icon>
+                        <ClipboardList :size="40" :stroke-width="1.5" />
+                    </template>
+                </EmptyState>
             </div>
         </div>
     </div>
@@ -127,6 +139,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useCompanyStore } from '@/stores/company'
 import SkeletonLoader from '@/components/ui/SkeletonLoader.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import { Building2, Users, ShoppingCart, DollarSign, TrendingUp, ClipboardList } from '@lucide/vue'
 import api from '@/api'
 
 const companyStore = useCompanyStore()
@@ -146,25 +159,25 @@ const kpiCards = computed(() => {
         {
             label: 'Total Companies', value: o.companies, trend: `${o.active_companies} active`,
             trendUp: true,
-            icon: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            icon: Building2,
             bg: '#EEF2FF', color: '#4F46E5',
         },
         {
             label: 'Total Users', value: o.total_users, trend: 'All tenants',
             trendUp: true,
-            icon: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+            icon: Users,
             bg: '#D1FAE5', color: '#059669',
         },
         {
             label: 'Total Orders', value: formatNum(o.total_orders), trend: `${o.orders_today} today`,
             trendUp: o.orders_today > 0,
-            icon: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>',
+            icon: ShoppingCart,
             bg: '#FEF3C7', color: '#D97706',
         },
         {
             label: 'Total Revenue', value: '৳' + formatNum(o.total_revenue), trend: `৳${formatNum(o.revenue_today)} today`,
             trendUp: o.revenue_today > 0,
-            icon: '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+            icon: DollarSign,
             bg: '#CFFAFE', color: '#0891B2',
         },
     ]

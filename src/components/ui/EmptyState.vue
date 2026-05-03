@@ -1,6 +1,8 @@
 <template>
     <div class="empty-state" :class="compact ? 'empty-state--compact' : ''">
-        <div class="empty-state__icon">{{ icon }}</div>
+        <div class="empty-state__icon">
+            <slot name="icon">{{ icon }}</slot>
+        </div>
         <h6 class="empty-state__title">{{ title }}</h6>
         <p v-if="description" class="empty-state__desc">{{ description }}</p>
         <slot />

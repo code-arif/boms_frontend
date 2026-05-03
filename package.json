@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/vue": "^1.14.0",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
