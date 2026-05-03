@@ -61,7 +61,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": { target: "https://boms_backend.test", changeOrigin: true },
+      "/api": { target: "https://boms_backend.test/api/v1", changeOrigin: true },
     },
   },
 });
