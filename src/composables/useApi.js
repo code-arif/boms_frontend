@@ -10,21 +10,35 @@ export function useApi() {
   async function request(method, url, payload = null, options = {}) {
     loading.value = true;
     error.value = null;
+
     try {
-      const res = await api[method](url, payload);
-      if (options.successMessage) toast.success(options.successMessage);
+      const config = ["get", "delete"].includes(method)
+        ? { params: payload }
+        : payload;
+
+      const res = await api[method](url, config);
+
+      if (options.successMessage) {
+        toast.success(options.successMessage);
+      }
+
       return res.data;
     } catch (err) {
-      const msg = err.response?.data?.message || "Something went wrong.";
+      const msg =
+        err.response?.data?.message || err.message || "Something went wrong.";
       error.value = msg;
-      if (!options.silent) toast.error(msg);
+
+      if (!options.silent) {
+        toast.error(msg);
+      }
+
       throw err;
     } finally {
       loading.value = false;
     }
   }
 
-  const get = (url, opts) => request("get", url, null, opts);
+  const get = (url, params, opts) => request("get", url, params, opts);
   const post = (url, data, opts) => request("post", url, data, opts);
   const put = (url, data, opts) => request("put", url, data, opts);
   const patch = (url, data, opts) => request("patch", url, data, opts);

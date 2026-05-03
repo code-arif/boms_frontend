@@ -1,33 +1,41 @@
 <template>
-  <div class="skeleton-wrap" :style="{ gap: gap + 'px' }">
-    <div
-      v-for="n in count"
-      :key="n"
-      class="skeleton-block"
-      :style="{ height: height + 'px', borderRadius: radius + 'px' }"
-    />
+  <div class="skeleton-wrap" :style="{ gap: gap + 'px', display: 'flex', flexDirection: 'column', width: '100%' }">
+    <div v-for="n in count" :key="n" class="skeleton-block" :style="{
+      height: height + 'px',
+      borderRadius: radius + 'px',
+      width: typeof width === 'number' ? width + 'px' : width,
+    }" />
   </div>
 </template>
 
 <script setup>
 defineProps({
-  count:  { type: Number, default: 3 },
-  height: { type: Number, default: 60 },
-  gap:    { type: Number, default: 12 },
+  count: { type: Number, default: 3 },
+  height: { type: Number, default: 56 },
+  gap: { type: Number, default: 10 },
   radius: { type: Number, default: 10 },
+  width: { type: [Number, String], default: '100%' },
 })
 </script>
 
 <style scoped>
-.skeleton-wrap  { display: flex; flex-direction: column; width: 100%; }
 .skeleton-block {
-  width: 100%;
-  background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
+  background: linear-gradient(90deg,
+      #f0f0f0 25%,
+      #e0e0e0 37%,
+      #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  flex-shrink: 0;
 }
+
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
