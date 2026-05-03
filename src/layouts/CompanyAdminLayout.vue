@@ -170,7 +170,6 @@ async function handleLogout() {
     }
 }
 
-/* Sidebar */
 .ca-sidebar {
     width: var(--sidebar-width);
     min-height: 100vh;
@@ -183,7 +182,7 @@ async function handleLogout() {
     bottom: 0;
     z-index: 200;
     transition: width .25s cubic-bezier(.4, 0, .2, 1);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .ca-sidebar--collapsed {

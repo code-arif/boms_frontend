@@ -1,7 +1,10 @@
 <template>
     <div class="sa-layout" :class="{ 'sa-layout--collapsed': sidebarCollapsed }">
+        <!-- Mobile Overlay -->
+        <div v-if="mobileSidebarOpen" class="sa-sidebar-overlay" @click="mobileSidebarOpen = false"></div>
+
         <!-- Sidebar -->
-        <aside class="sa-sidebar" :class="{ 'sa-sidebar--collapsed': sidebarCollapsed }">
+        <aside class="sa-sidebar" :class="{ 'sa-sidebar--collapsed': sidebarCollapsed, 'sa-sidebar--mobile-open': mobileSidebarOpen }">
             <!-- Logo -->
             <div class="sa-sidebar__logo">
                 <span class="sa-logo-icon">🍳</span>
@@ -20,7 +23,7 @@
                         <p v-if="!sidebarCollapsed && group.label" class="sa-nav-group-label">{{ group.label }}</p>
                     </transition>
                     <router-link v-for="item in group.items" :key="item.to" :to="item.to" class="sa-nav-link"
-                        active-class="sa-nav-link--active" :title="sidebarCollapsed ? item.label : ''">
+                        active-class="sa-nav-link--active" :title="sidebarCollapsed ? item.label : ''" @click="mobileSidebarOpen = false">
                         <span class="sa-nav-icon" v-html="item.icon" />
                         <transition name="fade-text">
                             <span v-if="!sidebarCollapsed" class="sa-nav-label">{{ item.label }}</span>
@@ -64,8 +67,15 @@
             <!-- Top header -->
             <header class="sa-header">
                 <div class="sa-header__left">
-                    <h1 class="sa-page-title">{{ pageTitle }}</h1>
-                    <p class="sa-page-sub">{{ pageSubtitle }}</p>
+                    <button class="sa-mobile-toggle" @click="mobileSidebarOpen = true">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="sa-page-title">{{ pageTitle }}</h1>
+                        <p class="sa-page-sub">{{ pageSubtitle }}</p>
+                    </div>
                 </div>
                 <div class="sa-header__right">
                     <div class="sa-header-badge">
@@ -100,6 +110,7 @@ const route = useRoute()
 const toast = useToast()
 
 const sidebarCollapsed = ref(false)
+const mobileSidebarOpen = ref(false)
 const currentTime = ref('')
 let timer = null
 
@@ -182,7 +193,7 @@ onUnmounted(() => clearInterval(timer))
     bottom: 0;
     z-index: 200;
     transition: width .25s cubic-bezier(.4, 0, .2, 1);
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 4px 0 24px rgba(0, 0, 0, .12);
 }
 
@@ -416,6 +427,23 @@ onUnmounted(() => clearInterval(timer))
     z-index: 100;
 }
 
+.sa-header__left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sa-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--gray-900);
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+}
+
 .sa-page-title {
     font-size: 18px;
     font-weight: 700;
@@ -501,9 +529,31 @@ onUnmounted(() => clearInterval(timer))
     opacity: 0;
 }
 
-@media (max-width: 768px) {
+.sa-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 190;
+    opacity: 0;
+    animation: fadeOverlay .2s forwards;
+}
+
+@keyframes fadeOverlay {
+    to { opacity: 1; }
+}
+
+@media (max-width: 1024px) {
     .sa-sidebar {
         transform: translateX(-100%);
+        width: 260px !important;
+    }
+
+    .sa-sidebar--mobile-open {
+        transform: translateX(0);
     }
 
     .sa-main {
@@ -511,11 +561,23 @@ onUnmounted(() => clearInterval(timer))
     }
 
     .sa-content {
-        padding: 1rem;
+        padding: 1.5rem 1.25rem;
     }
 
     .sa-header {
-        padding: 1rem;
+        padding: 1rem 1.25rem;
+    }
+    
+    .sa-header-badge {
+        display: none;
+    }
+
+    .sa-mobile-toggle {
+        display: flex;
+    }
+    
+    .sa-toggle-btn {
+        display: none;
     }
 }
 </style>
